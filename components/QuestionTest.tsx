@@ -44,16 +44,14 @@ export function QuestionTest({ questions, onBack, onComplete }: Props) {
     const option = q.options.find((o) => o.id === selectedOptionId);
     if (!option) return;
 
-    setScores((prev) => {
-      // Recompute deterministically to avoid double-add when user changes choices:
+    setScores(() => {
+      // Recompute deterministically from selected answers
       const next = emptyQuestionScores();
       for (const question of questions) {
         const picked = selected[question.id];
         const pickedOption = question.options.find((o) => o.id === picked);
         if (pickedOption) next[pickedOption.profile] += 1;
       }
-      // Apply current choice (in case state timing):
-      next[option.profile] += 1;
       return next;
     });
 
@@ -65,7 +63,6 @@ export function QuestionTest({ questions, onBack, onComplete }: Props) {
           const pickedOption = question.options.find((o) => o.id === picked);
           if (pickedOption) s[pickedOption.profile] += 1;
         }
-        s[option.profile] += 1;
         return s;
       })();
       onComplete(final);
