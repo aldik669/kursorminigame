@@ -41,6 +41,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
   const [message, setMessage] = useState<string | null>(null);
   const [timerMs, setTimerMs] = useState(0);
   const [gameScore, setGameScore] = useState(0);
+  const [memoryTimeMs, setMemoryTimeMs] = useState(0);
 
   const [check, setCheck] = useState<{
     correct: Set<number>;
@@ -67,7 +68,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
     const totalAttempts = totalCorrectRef.current + totalWrongRef.current + totalMissedRef.current;
     if (totalAttempts <= 0) return 0;
     return Math.round((100 * totalCorrectRef.current) / totalAttempts);
-  }, [timerMs, phase]); // cheap re-render trigger
+  }, [timerMs, phase]);
 
   const averageResponseTime = useMemo(() => {
     const arr = responseTimesRef.current;
@@ -81,6 +82,13 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
     const id = window.setInterval(() => setTimerMs((x) => x + 1000), 1000);
     return () => window.clearInterval(id);
   }, [started, phase]);
+
+  useEffect(() => {
+    if (!showing) return;
+    setMemoryTimeMs(0);
+    const id = window.setInterval(() => setMemoryTimeMs((x) => x + 100), 100);
+    return () => window.clearInterval(id);
+  }, [showing]);
 
   function startGame() {
     setStarted(true);
@@ -112,6 +120,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
     setPhase("memorize");
     roundStartRef.current = Date.now();
     firstClickRef.current = null;
+    setMemoryTimeMs(0);
 
     window.setTimeout(() => {
       setShowing(false);
@@ -131,7 +140,6 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
       if (had) next.delete(i);
       else next.add(i);
 
-      // corrections metric: any time selection decreases or changes previous picks
       const last = lastSelectionRef.current;
       if (had || last.size > next.size) correctionsRef.current += 1;
       lastSelectionRef.current = new Set(next);
@@ -180,12 +188,15 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
         }
       }, 900);
     } else {
-      setMessage("Попробуй еще раз 🙌");
+      window.setTimeout(() => {
+        if (levelIdx >= LEVELS.length - 1) {
+          finish();
+        } else {
+          setLevelIdx((x) => x + 1);
+          beginLevel(levelIdx + 1);
+        }
+      }, 1500);
     }
-  }
-
-  function retryLevel() {
-    beginLevel(levelIdx);
   }
 
   function finish() {
@@ -198,7 +209,6 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
     const firstClick = firstClickRef.current;
     const timeToFirstClick = firstClick ? Math.max(0, firstClick - roundStartRef.current) : 0;
 
-    // Simple derived scores for MVP
     const memoryScore = Math.round(Math.min(100, acc + Math.min(20, (LEVELS.length / LEVELS.length) * 10)));
     const attentionScore = Math.round(Math.min(100, acc - Math.min(20, totalWrong * 3)));
 
@@ -222,8 +232,8 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
 
   return (
     <Card className="p-7 sm:p-10">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex items-start gap-4">
+        <div className="flex-1">
           <div className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-1.5 text-sm text-white/80">
             <span aria-hidden>🧩</span> мини-игра
           </div>
@@ -231,9 +241,6 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
           <p className="mt-3 text-white/70 leading-relaxed">
             Запомни синие блоки и повтори рисунок.
           </p>
-        </div>
-        <div className="hidden sm:block text-5xl select-none" aria-hidden>
-          🟦
         </div>
       </div>
 
@@ -257,6 +264,20 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
         <>
           <div className="mt-7 grid place-items-center">
             <div className="grid gap-2">
+              {showing && (
+                <div className="mb-4 w-80 max-w-full">
+                  <div className="mb-2 flex justify-between text-xs text-white/60">
+                    <span>Время запоминания</span>
+                    <span>{Math.round(memoryTimeMs / 100) / 10}s / {Math.round(level.showMs / 100) / 10}s</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-400 to-cyan-300 transition-all duration-100"
+                      style={{ width: `${Math.min(100, (memoryTimeMs / level.showMs) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
               <div
                 className="grid gap-2 rounded-3xl border border-white/10 bg-slate-950/20 p-4"
                 style={{ gridTemplateColumns: `repeat(${GRID}, minmax(0, 1fr))` }}
@@ -310,10 +331,6 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
             </Button>
 
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-              {phase === "checked" && message && (check?.wrong.size || check?.missed.size) ? (
-                <Button onClick={retryLevel}>Переиграть уровень</Button>
-              ) : null}
-
               <Button onClick={doCheck} disabled={!canCheck}>
                 Проверить <span aria-hidden>✅</span>
               </Button>
@@ -339,4 +356,3 @@ function Stat({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

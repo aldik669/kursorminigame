@@ -14,6 +14,15 @@ function normalizePhone(input: string) {
   return input.replace(/[^\d+]/g, "");
 }
 
+function formatPhoneDisplay(input: string): string {
+  const digits = input.replace(/[^\d]/g, "");
+  if (digits.length === 0) return "";
+  if (digits.length <= 1) return "+" + digits;
+  if (digits.length <= 3) return "+" + digits.substring(0, 1) + "(" + digits.substring(1);
+  if (digits.length <= 6) return "+" + digits.substring(0, 1) + "(" + digits.substring(1, 4) + ") " + digits.substring(4);
+  return "+" + digits.substring(0, 1) + "(" + digits.substring(1, 4) + ") " + digits.substring(4, 6) + "* ****";
+}
+
 export function RegistrationForm({ onBack, onSubmit }: Props) {
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState<string>("");
@@ -32,9 +41,12 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
     }
     if (!parentName.trim()) e.parentName = "Введите имя родителя.";
     if (!parentPhone.trim()) e.parentPhone = "Введите номер телефона.";
-    if (parentPhone.trim() && normalizePhone(parentPhone).replace(/\+/g, "").length < 10) {
-      e.parentPhone = "Номер телефона должен быть минимум 10 символов.";
+    
+    const phoneDigits = normalizePhone(parentPhone).replace(/\+/g, "");
+    if (parentPhone.trim() && (phoneDigits.length < 11 || phoneDigits.length > 11)) {
+      e.parentPhone = "Номер не корректный";
     }
+    
     return e;
   }, [childName, childAge, parentName, parentPhone]);
 
@@ -53,8 +65,8 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
 
   return (
     <Card className="p-7 sm:p-10">
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex items-start gap-4">
+        <div className="flex-1">
           <div className="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-1.5 text-sm text-white/80">
             <span aria-hidden>📝</span> регистрация
           </div>
@@ -63,9 +75,6 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
             Мы сохраним результат и подготовим IT Passport для родителя.
           </p>
         </div>
-        <div className="hidden sm:block text-5xl select-none" aria-hidden>
-          🧑‍💻
-        </div>
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -73,7 +82,7 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
           label="Имя ребенка"
           value={childName}
           onChange={setChildName}
-          placeholder="Например: Айбар"
+          placeholder="Введите имя"
           error={touched.childName ? errors.childName : undefined}
           onBlur={() => setTouched((t) => ({ ...t, childName: true }))}
         />
@@ -90,7 +99,7 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
           label="Имя родителя"
           value={parentName}
           onChange={setParentName}
-          placeholder="Например: Алия"
+          placeholder="Введите имя"
           error={touched.parentName ? errors.parentName : undefined}
           onBlur={() => setTouched((t) => ({ ...t, parentName: true }))}
         />
@@ -98,7 +107,8 @@ export function RegistrationForm({ onBack, onSubmit }: Props) {
           label="Телефон родителя"
           value={parentPhone}
           onChange={setParentPhone}
-          placeholder="+7 777 123 45 67"
+          displayValue={formatPhoneDisplay(parentPhone)}
+          placeholder="+7(777) *** ****"
           inputMode="tel"
           error={touched.parentPhone ? errors.parentPhone : undefined}
           onBlur={() => setTouched((t) => ({ ...t, parentPhone: true }))}
@@ -126,6 +136,7 @@ function Field(props: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  displayValue?: string;
   placeholder?: string;
   inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   error?: string;
@@ -140,10 +151,14 @@ function Field(props: {
         onBlur={props.onBlur}
         placeholder={props.placeholder}
         inputMode={props.inputMode}
-        className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-cyan-300/50 focus:ring-2 focus:ring-cyan-300/20"
+        className={`mt-2 w-full rounded-2xl border bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-cyan-300/50 focus:ring-2 focus:ring-cyan-300/20 ${
+          props.error ? "border-pink-300/50" : "border-white/10"
+        }`}
       />
+      {props.displayValue && props.displayValue !== props.value && (
+        <div className="mt-2 text-xs text-white/50">Отображение: {props.displayValue}</div>
+      )}
       {props.error ? <div className="mt-2 text-sm text-pink-200">{props.error}</div> : null}
     </div>
   );
 }
-
