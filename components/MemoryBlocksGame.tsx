@@ -40,6 +40,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
   const [phase, setPhase] = useState<"idle" | "memorize" | "pick" | "checked">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [timerMs, setTimerMs] = useState(0);
+  const [gameScore, setGameScore] = useState(0);
 
   const [check, setCheck] = useState<{
     correct: Set<number>;
@@ -49,6 +50,8 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
 
   // Metrics
   const attemptsRef = useRef(0);
+  const completedLevelsRef = useRef(0);
+  const maxLevelReachedRef = useRef(1);
   const totalCorrectRef = useRef(0);
   const totalWrongRef = useRef(0);
   const totalMissedRef = useRef(0);
@@ -82,7 +85,10 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
   function startGame() {
     setStarted(true);
     setLevelIdx(0);
+    setGameScore(0);
     attemptsRef.current = 0;
+    completedLevelsRef.current = 0;
+    maxLevelReachedRef.current = 1;
     totalCorrectRef.current = 0;
     totalWrongRef.current = 0;
     totalMissedRef.current = 0;
@@ -95,6 +101,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
 
   function beginLevel(idx: number) {
     const cfg = LEVELS[idx] ?? LEVELS[0]!;
+    maxLevelReachedRef.current = Math.max(maxLevelReachedRef.current, cfg.level);
     const p = randomPattern(cfg.cells);
     setPattern(p);
     setSelected(new Set());
@@ -161,6 +168,8 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
     setPhase("checked");
 
     if (wrong.size === 0 && missed.size === 0) {
+      completedLevelsRef.current += 1;
+      setGameScore((s) => s + level.level * 20);
       setMessage("Отлично! 🎉");
       window.setTimeout(() => {
         if (levelIdx >= LEVELS.length - 1) {
@@ -202,8 +211,8 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
       totalMissed,
       averageResponseTime,
       attempts: attemptsRef.current,
-      completedLevels: LEVELS.length,
-      maxLevelReached: LEVELS.length,
+      completedLevels: completedLevelsRef.current,
+      maxLevelReached: maxLevelReachedRef.current,
       correctionsCount: correctionsRef.current,
       timeToFirstClick
     };
@@ -230,7 +239,7 @@ export function MemoryBlocksGame({ onBack, onComplete }: Props) {
 
       <div className="mt-6 grid gap-3 sm:grid-cols-4">
         <Stat label="Level" value={started ? String(level.level) : "—"} />
-        <Stat label="Score" value={started ? String(levelIdx * 20 * level.level) : "—"} />
+        <Stat label="Score" value={started ? String(gameScore) : "—"} />
         <Stat label="Timer" value={started ? `${Math.floor(timerMs / 1000)}s` : "—"} />
         <Stat label="Accuracy" value={started ? `${accuracy}%` : "—"} />
       </div>

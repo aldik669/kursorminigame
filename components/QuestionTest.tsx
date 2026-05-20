@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Question, QuestionScores } from "@/types";
 import { emptyQuestionScores } from "@/lib/scoring";
 import { Button } from "@/components/Button";
@@ -15,16 +15,10 @@ export function QuestionTest({ questions, onBack, onComplete }: Props) {
   const total = questions.length;
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<Record<string, string | undefined>>({});
-  const [scores, setScores] = useState<QuestionScores>(() => emptyQuestionScores());
 
   const q = questions[idx];
   const selectedOptionId = q ? selected[q.id] : undefined;
   const canNext = Boolean(selectedOptionId);
-
-  const progress = useMemo(() => {
-    if (total <= 0) return 0;
-    return idx / total;
-  }, [idx, total]);
 
   useEffect(() => {
     // soft scroll to top on next question
@@ -43,17 +37,6 @@ export function QuestionTest({ questions, onBack, onComplete }: Props) {
     if (!q || !selectedOptionId) return;
     const option = q.options.find((o) => o.id === selectedOptionId);
     if (!option) return;
-
-    setScores(() => {
-      // Recompute deterministically from selected answers
-      const next = emptyQuestionScores();
-      for (const question of questions) {
-        const picked = selected[question.id];
-        const pickedOption = question.options.find((o) => o.id === picked);
-        if (pickedOption) next[pickedOption.profile] += 1;
-      }
-      return next;
-    });
 
     if (idx === total - 1) {
       const final = (() => {

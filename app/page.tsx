@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { QuestionTest } from "@/components/QuestionTest";
@@ -27,6 +27,32 @@ export default function HomePage() {
     return computeFinalResult({ registration, questionScores, memoryStats });
   }, [registration, questionScores, memoryStats]);
 
+  useEffect(() => {
+    const raw = window.localStorage.getItem("kursor-passport-progress");
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw) as {
+        step?: FlowStep;
+        registration?: RegistrationData | null;
+        questionScores?: QuestionScores | null;
+        memoryStats?: MemoryStats | null;
+      };
+      if (data.registration) setRegistration(data.registration);
+      if (data.questionScores) setQuestionScores(data.questionScores);
+      if (data.memoryStats) setMemoryStats(data.memoryStats);
+      if (data.step) setStep(data.step);
+    } catch {
+      // ignore invalid local cache
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "kursor-passport-progress",
+      JSON.stringify({ step, registration, questionScores, memoryStats })
+    );
+  }, [step, registration, questionScores, memoryStats]);
+
   return (
     <main className="min-h-screen px-4 py-10 sm:px-6">
       <div className="mx-auto w-full max-w-5xl">
@@ -41,6 +67,31 @@ export default function HomePage() {
           <div className="hidden sm:block text-sm text-white/70">
             Игровая мини-диагностика • 10–12 минут
           </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap gap-2">
+          {[
+            { key: "welcome", label: "Старт" },
+            { key: "registration", label: "Данные" },
+            { key: "test", label: "Тест" },
+            { key: "game", label: "Memory" },
+            { key: "result", label: "Паспорт" }
+          ].map((x) => {
+            const active = step === x.key;
+            return (
+              <div
+                key={x.key}
+                className={[
+                  "rounded-2xl px-3 py-1.5 text-sm border transition",
+                  active
+                    ? "bg-cyan-300/20 border-cyan-200/40 text-cyan-100"
+                    : "bg-white/5 border-white/10 text-white/70"
+                ].join(" ")}
+              >
+                {x.label}
+              </div>
+            );
+          })}
         </div>
 
         {step === "welcome" && (
@@ -89,6 +140,7 @@ export default function HomePage() {
               setQuestionScores(null);
               setMemoryStats(null);
               setStep("welcome");
+              window.localStorage.removeItem("kursor-passport-progress");
             }}
           />
         )}

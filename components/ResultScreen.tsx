@@ -30,6 +30,25 @@ export function ResultScreen({
     return finalResult.top3Profiles.map((k) => PROFILE_INFO[k]);
   }, [finalResult.top3Profiles]);
 
+  const logicScore = useMemo(() => {
+    const raw = finalResult.questionScores.logic * 10 + memoryStats.accuracy * 0.3;
+    return Math.min(100, Math.round(raw));
+  }, [finalResult.questionScores.logic, memoryStats.accuracy]);
+
+  const creativityScore = useMemo(() => {
+    const creativeBase =
+      (finalResult.questionScores.visual +
+        finalResult.questionScores.game +
+        finalResult.questionScores.web) *
+      6;
+    return Math.min(100, Math.round(creativeBase + memoryStats.memoryScore * 0.2));
+  }, [
+    finalResult.questionScores.visual,
+    finalResult.questionScores.game,
+    finalResult.questionScores.web,
+    memoryStats.memoryScore
+  ]);
+
   useEffect(() => {
     let cancelled = false;
     async function save() {
@@ -91,6 +110,8 @@ export function ResultScreen({
           <Mini label="Возраст" value={`${registration.childAge}`} icon="🎂" />
           <Mini label="Memory Score" value={`${memoryStats.memoryScore}`} icon="🧠" />
           <Mini label="Attention Score" value={`${memoryStats.attentionScore}`} icon="👀" />
+          <Mini label="Logic Score" value={`${logicScore}`} icon="🧩" />
+          <Mini label="Creativity Score" value={`${creativityScore}`} icon="🎨" />
           <Mini label="Accuracy" value={`${memoryStats.accuracy}%`} icon="🎯" />
           <Mini label="Total score" value={`${finalResult.totalScore}`} icon="⭐" />
         </div>

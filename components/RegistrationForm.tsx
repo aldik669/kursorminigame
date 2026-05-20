@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type HTMLAttributes } from "react";
 import type { RegistrationData } from "@/types";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -127,7 +127,7 @@ function Field(props: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
-  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   error?: string;
   onBlur?: () => void;
 }) {
