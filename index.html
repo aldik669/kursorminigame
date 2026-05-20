@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kursor IT Passport — IT-диагностика для детей</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="hatch hatch--tl" aria-hidden="true"></div>
+    <div class="hatch hatch--br" aria-hidden="true"></div>
+
+    <header class="header">
+      <div class="container header__inner">
+        <a href="#" class="logo" data-action="home">
+          <img src="assets/________KURSOR-13eea1a0-3552-44c0-ba14-4c1ef2df34b3.png" alt="" class="logo__icon" />
+          <div>
+            <div class="logo__title">KURSOR</div>
+            <div class="logo__sub">школа программирования для детей</div>
+          </div>
+        </a>
+        <a href="tel:+77005452025" class="phone">
+          <span class="phone__icon">📞</span>
+          <span class="phone__text">+7 (700) 545-20-25</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="app">
+      <!-- WELCOME -->
+      <section id="screen-welcome" class="screen screen--active">
+        <div class="container">
+          <div class="hero">
+            <div class="hero__decor hero__decor--left">
+              <div class="float-card">
+                <span class="float-card__icon">📝</span>
+                <span>7 вопросов</span>
+              </div>
+            </div>
+            <div class="hero__decor hero__decor--right">
+              <div class="float-card">
+                <span class="float-card__icon">🎮</span>
+                <span>3 мини-игры</span>
+              </div>
+            </div>
+
+            <div class="hero__center">
+              <p class="eyebrow">Kursor IT Passport</p>
+              <h1 class="hero__title">Kursor IT Passport</h1>
+              <p class="hero__subtitle">
+                IT-диагностика, которая помогает понять, в какой сфере технологий ребенок может быть сильнее
+              </p>
+              <p class="hero__desc">
+                Ребенок проходит короткий тест и игровые задания. Мы определяем сильные стороны, стиль мышления и
+                подходящие направления для старта в IT.
+              </p>
+              <button class="btn btn--primary btn--lg" data-action="start">Начать диагностику</button>
+              <span class="badge">7–10 минут</span>
+            </div>
+
+            <div class="hero__visual">
+              <img
+                src="assets/______________2026-05-20___16.34.02-43638315-1f07-4901-be3f-b30146a5284d.png"
+                alt="Персонажи Kursor"
+                class="hero__img"
+              />
+            </div>
+          </div>
+
+          <section class="steps">
+            <h2 class="section-title">Как проходит диагностика</h2>
+            <div class="steps__grid">
+              <article class="step-card">
+                <div class="step-card__icon">🎯</div>
+                <h3>Возрастные вопросы</h3>
+                <p>Вопросы адаптируются под возраст ребенка: 5–7, 8–12 или 13+.</p>
+              </article>
+              <article class="step-card">
+                <div class="step-card__icon">🧠</div>
+                <h3>Мини-игры</h3>
+                <p>Ребенок проходит задания на память, внимание, реакцию и логику.</p>
+              </article>
+              <article class="step-card">
+                <div class="step-card__icon">🎫</div>
+                <h3>IT Passport</h3>
+                <p>В конце формируется мягкая карта сильных сторон и предварительных направлений.</p>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- REGISTRATION -->
+      <section id="screen-registration" class="screen">
+        <div class="container container--narrow">
+          <div class="card card--form">
+            <h2 class="card__title">Перед стартом заполните данные</h2>
+            <p class="card__desc">Это нужно, чтобы подготовить IT Passport и передать результат родителю.</p>
+            <form id="registration-form" class="form" novalidate>
+              <label class="field">
+                <span>Имя ребенка</span>
+                <input type="text" name="childName" required placeholder="Например: Айдар" />
+              </label>
+              <fieldset class="field field--age">
+                <span>Возраст ребенка</span>
+                <div class="age-options">
+                  <label class="age-option">
+                    <input type="radio" name="ageGroup" value="5-7" required />
+                    <span>5–7 лет</span>
+                  </label>
+                  <label class="age-option">
+                    <input type="radio" name="ageGroup" value="8-12" />
+                    <span>8–12 лет</span>
+                  </label>
+                  <label class="age-option">
+                    <input type="radio" name="ageGroup" value="13+" />
+                    <span>13+ лет</span>
+                  </label>
+                </div>
+              </fieldset>
+              <label class="field">
+                <span>Имя родителя</span>
+                <input type="text" name="parentName" required placeholder="Например: Алия" />
+              </label>
+              <label class="field">
+                <span>Номер телефона родителя</span>
+                <input type="tel" name="parentPhone" required placeholder="+7 700 545 20 25" />
+              </label>
+              <p class="form-error" id="form-error" hidden></p>
+              <button type="submit" class="btn btn--primary btn--full">Продолжить</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUESTIONS -->
+      <section id="screen-questions" class="screen">
+        <div class="container container--narrow">
+          <div class="card card--question">
+            <div class="progress-text" id="question-progress">Вопрос 1 из 7</div>
+            <div class="progress-bar"><div class="progress-bar__fill" id="question-progress-fill"></div></div>
+            <h2 class="question-title" id="question-title"></h2>
+            <p class="question-hint" id="question-hint" hidden>Отличный выбор!</p>
+            <div class="answers" id="answers"></div>
+            <button class="btn btn--primary btn--full" id="question-next" disabled>Далее</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMORY GAME -->
+      <section id="screen-memory" class="screen">
+        <div class="container container--narrow">
+          <div class="card">
+            <h2 class="card__title">Memory Blocks</h2>
+            <p class="card__desc">Запомни подсвеченные клетки и повтори рисунок.</p>
+            <div class="game-stats" id="memory-stats"></div>
+            <div id="memory-board" class="memory-board"></div>
+            <p class="game-message" id="memory-message"></p>
+            <div class="game-actions">
+              <button class="btn btn--ghost" id="memory-start">Начать игру</button>
+              <button class="btn btn--primary" id="memory-check" disabled>Проверить</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLOR GAME -->
+      <section id="screen-color" class="screen">
+        <div class="container container--narrow">
+          <div class="card">
+            <h2 class="card__title">Поймай цвет</h2>
+            <p class="card__desc">Выбирай цвет букв, а не значение слова.</p>
+            <div class="game-stats" id="color-stats"></div>
+            <div class="color-word" id="color-word">—</div>
+            <div class="color-options" id="color-options"></div>
+            <p class="game-message" id="color-message"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROUTE GAME -->
+      <section id="screen-route" class="screen">
+        <div class="container container--narrow">
+          <div class="card">
+            <h2 class="card__title">Собери маршрут</h2>
+            <p class="card__desc">Собери команды: возьми ключ 🔑, открой дверь 🚪, дойди до финиша ⭐.</p>
+            <div class="game-stats" id="route-stats"></div>
+            <div id="route-board" class="route-board"></div>
+            <div class="route-controls">
+              <button type="button" class="btn btn--ghost route-cmd" data-cmd="up">⬆️</button>
+              <button type="button" class="btn btn--ghost route-cmd" data-cmd="left">⬅️</button>
+              <button type="button" class="btn btn--ghost route-cmd" data-cmd="down">⬇️</button>
+              <button type="button" class="btn btn--ghost route-cmd" data-cmd="right">➡️</button>
+            </div>
+            <div class="route-commands" id="route-commands"></div>
+            <div class="game-actions">
+              <button class="btn btn--ghost" id="route-run">Запустить</button>
+              <button class="btn btn--ghost" id="route-reset">Сбросить</button>
+              <button class="btn btn--primary" id="route-next" disabled>Далее</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT -->
+      <section id="screen-result" class="screen">
+        <div class="container">
+          <div class="result-hero card">
+            <h2>Kursor IT Passport готов!</h2>
+            <p>Мы собрали мягкую диагностику сильных сторон ребенка и предварительных IT-направлений.</p>
+          </div>
+
+          <div class="result-grid" id="result-open"></div>
+
+          <div class="blur-section">
+            <h3>Подробная расшифровка диагностики</h3>
+            <div class="blur-content" id="blur-analytics"></div>
+            <div class="blur-overlay">
+              <p class="blur-overlay__title">Подробная расшифровка доступна после консультации с менеджером Kursor</p>
+              <p>
+                Наш менеджер свяжется с вами в ближайшее время, объяснит точный результат диагностики и подскажет, с
+                какого направления ребенку лучше начать.
+              </p>
+              <button class="btn btn--primary" type="button">Ожидать звонка менеджера</button>
+            </div>
+          </div>
+
+          <p class="result-thanks">
+            Спасибо за прохождение диагностики! Данные сохранены. Команда Kursor скоро свяжется с родителем по указанному
+            номеру.
+          </p>
+          <div class="result-actions">
+            <button class="btn btn--primary" data-action="restart">Пройти заново</button>
+            <button class="btn btn--ghost" data-action="home">Вернуться на главную</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN -->
+      <section id="screen-admin" class="screen">
+        <div class="container">
+          <div id="admin-login" class="card card--form">
+            <h2 class="card__title">Admin Panel</h2>
+            <p class="card__desc">MVP-защита паролем. Для реального запуска нужно подключить Supabase или Google Sheets.</p>
+            <input type="password" id="admin-password" class="input" placeholder="Введите пароль" />
+            <button class="btn btn--primary btn--full" id="admin-login-btn">Войти</button>
+            <p class="form-error" id="admin-error" hidden></p>
+          </div>
+          <div id="admin-panel" class="admin-panel" hidden>
+            <div class="admin-toolbar">
+              <input type="search" id="admin-search" class="input" placeholder="Поиск по имени или телефону" />
+              <select id="admin-filter" class="input">
+                <option value="all">Все профили</option>
+                <option value="visual">visual</option>
+                <option value="game">game</option>
+                <option value="web">web</option>
+                <option value="logic">logic</option>
+              </select>
+              <button class="btn btn--primary" id="admin-export">Export CSV</button>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table" id="admin-table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Ребенок</th>
+                    <th>Возраст</th>
+                    <th>Родитель</th>
+                    <th>Телефон</th>
+                    <th>Профиль</th>
+                    <th>Score</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/questions.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
