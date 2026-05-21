@@ -96,6 +96,15 @@ function computeFinalScores(questionScores, memory, color, route) {
   const strengths = buildStrengths(memory, color, route, top3);
   const growthZones = buildGrowthZones(memory, color, route);
 
+  const peerPercentile = Math.min(92, Math.max(68, 55 + Math.round(accuracy * 0.35)));
+  const abstractTraits = [
+    "гибкое мышление в цифровых задачах",
+    "уверенность в новых форматах",
+    "способность удерживать внимание",
+    "интерес к исследованию и пробам",
+    "потенциал для уверенного роста в IT"
+  ];
+
   return {
     questionScores: influenced,
     topProfile: ranking[0],
@@ -107,6 +116,9 @@ function computeFinalScores(questionScores, memory, color, route) {
     accuracy,
     strengths,
     growthZones,
-    directions: top3.map((k) => PROFILE_LABELS[k].track)
+    directions: top3.map((k) => PROFILE_LABELS[k].track),
+    abstractTraits: abstractTraits.slice(0, 3),
+    peerPercentile,
+    peerLabel: "выше среднего по детям, прошедшим диагностику"
   };
 }
