@@ -1150,3 +1150,77 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* ==============================
+   MOBILE HEADER FIX
+   ============================== */
+
+   @media (max-width: 768px) {
+    .header {
+      position: relative;
+      top: auto;
+      z-index: 20;
+      padding: 10px 0;
+      min-height: auto;
+      background: #ffffff;
+    }
+  
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+  
+    .container.header__inner {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+  
+    .logo {
+      max-width: calc(100% - 72px);
+    }
+  
+    .logo__title {
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+  
+    .logo__sub {
+      font-size: 13px;
+      line-height: 1.25;
+      margin-top: 6px;
+    }
+  
+    .phone {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      padding: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .phone__icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+  
+    .phone__text {
+      display: none;
+    }
+  
+    main {
+      padding-top: 0;
+    }
+  
+    .screen {
+      padding-top: 24px;
+    }
+  
+    .result-hero {
+      margin-top: 0;
+    }
+  }
