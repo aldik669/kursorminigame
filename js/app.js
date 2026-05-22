@@ -102,8 +102,14 @@ function initRegistration() {
     const childName = String(fd.get("childName") || "").trim();
     const ageGroup = fd.get("childAge");
 
+    const nameParts = childName.split(/\s+/).filter(Boolean);
     if (!childName) {
-      err.textContent = "Введите имя ребенка.";
+      err.textContent = "Введите имя и фамилию ребенка.";
+      err.hidden = false;
+      return;
+    }
+    if (nameParts.length < 2) {
+      err.textContent = "Введите и имя, и фамилию — например: Алия Иванова.";
       err.hidden = false;
       return;
     }
