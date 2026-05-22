@@ -30,101 +30,26 @@
     </header>
 
     <main id="app">
-      <!-- WELCOME -->
-      <section id="screen-welcome" class="screen screen--active">
-        <div class="container">
-          <div class="hero">
-            <div class="hero__center">
-              <p class="eyebrow">Kursor IT Passport</p>
-              <h1 class="hero__title">Kursor IT Passport</h1>
-              <p class="hero__subtitle">
-                IT-диагностика, которая помогает понять, в какой сфере технологий ребенок может быть сильнее
-              </p>
-              <p class="hero__desc">
-                Ребенок проходит короткий тест и игровые задания. Мы определяем сильные стороны, стиль мышления и
-                подходящие направления для старта в IT.
-              </p>
-              <div class="hero-cta-wrap">
-                <button class="btn btn--primary btn--cta-hero" data-action="start">Начать диагностику</button>
-                <div class="hero-cta-cards">
-                  <div class="hero-chip">
-                    <span class="hero-chip__icon">📝</span>
-                    <span>7 вопросов</span>
-                  </div>
-                  <div class="hero-chip">
-                    <span class="hero-chip__icon">🎮</span>
-                    <span>3 мини-игры</span>
-                  </div>
-                  <div class="hero-chip">
-                    <span class="hero-chip__icon">⏱️</span>
-                    <span>7–10 минут</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <section class="steps">
-            <h2 class="section-title">Как проходит диагностика</h2>
-            <div class="steps__grid">
-              <article class="step-card">
-                <div class="step-card__icon">🎯</div>
-                <h3>Возрастные вопросы</h3>
-                <p>Вопросы адаптируются под возраст ребенка: 5–7, 8–12 или 13+.</p>
-              </article>
-              <article class="step-card">
-                <div class="step-card__icon">🧠</div>
-                <h3>Мини-игры</h3>
-                <p>Ребенок проходит задания на память, внимание, реакцию и логику.</p>
-              </article>
-              <article class="step-card">
-                <div class="step-card__icon">🎫</div>
-                <h3>IT Passport</h3>
-                <p>В конце формируется мягкая карта сильных сторон и предварительных направлений.</p>
-              </article>
-            </div>
-          </section>
-        </div>
-      </section>
-
       <!-- REGISTRATION -->
-      <section id="screen-registration" class="screen">
+      <section id="screen-registration" class="screen screen--active">
         <div class="container container--narrow">
           <div class="card card--form">
-            <h2 class="card__title">Перед стартом заполните данные</h2>
-            <p class="card__desc">Это нужно, чтобы подготовить IT Passport и передать результат родителю.</p>
+            <div class="form-intro">
+              <h1 class="form-intro__title">IT Passport</h1>
+              <p class="form-intro__desc">Пройди короткий тест и мини-игры, чтобы узнать свои сильные стороны в IT.</p>
+              <p class="form-intro__hint">Здесь нет неправильных ответов — выбирай то, что тебе ближе.</p>
+            </div>
             <form id="registration-form" class="form" novalidate>
               <label class="field">
                 <span>Имя ребенка</span>
-                <input type="text" name="childName" required placeholder="Имя ребенка" />
-              </label>
-              <div class="field field--age">
-                <span id="age-label">Возраст ребенка</span>
-                <div class="age-options" role="radiogroup" aria-labelledby="age-label">
-                  <label class="age-option">
-                    <input type="radio" name="ageGroup" value="5-7" required />
-                    <span>5–7 лет</span>
-                  </label>
-                  <label class="age-option">
-                    <input type="radio" name="ageGroup" value="8-12" />
-                    <span>8–12 лет</span>
-                  </label>
-                  <label class="age-option">
-                    <input type="radio" name="ageGroup" value="13+" />
-                    <span>13+ лет</span>
-                  </label>
-                </div>
-              </div>
-              <label class="field">
-                <span>Имя родителя</span>
-                <input type="text" name="parentName" required placeholder="Имя родителя" />
+                <input type="text" name="childName" required placeholder="Имя" autocomplete="given-name" />
               </label>
               <label class="field">
-                <span>Номер телефона родителя</span>
-                <input type="tel" name="parentPhone" required placeholder="+7(777) ***-**-**" inputmode="numeric" autocomplete="tel" maxlength="22" />
+                <span>Возраст ребенка</span>
+                <input type="number" name="childAge" required placeholder="Возраст (5–17)" min="5" max="17" inputmode="numeric" />
               </label>
               <p class="form-error" id="form-error" hidden></p>
-              <button type="submit" class="btn btn--primary btn--full">Продолжить</button>
+              <button type="submit" class="btn btn--primary btn--full btn--cta-hero">Начать тест</button>
             </form>
           </div>
         </div>
@@ -225,12 +150,23 @@
         </div>
       </section>
 
+      <!-- SAVING -->
+      <section id="screen-saving" class="screen">
+        <div class="container container--narrow">
+          <div class="card saving-card">
+            <div class="saving-icon">⏳</div>
+            <h2 class="card__title">Сохраняем результат...</h2>
+            <p class="card__desc">Формируем твой IT Passport. Это займёт несколько секунд.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- RESULT -->
       <section id="screen-result" class="screen">
         <div class="container">
           <div class="result-hero card">
-            <h2>Kursor IT Passport готов!</h2>
-            <p>Мы собрали диагностику сильных сторон ребенка и предварительных IT-направлений.</p>
+            <h2>IT Passport готов!</h2>
+            <p>Сильные стороны, мини-игры и предварительное IT-направление — всё здесь.</p>
           </div>
 
           <div class="result-grid" id="result-open"></div>
@@ -240,19 +176,16 @@
             <div class="blur-section__inner">
               <div class="blur-content" id="blur-analytics"></div>
               <div class="blur-overlay">
-                <p class="blur-overlay__title">Подробная расшифровка доступна после консультации с менеджером Kursor</p>
+                <p class="blur-overlay__title">Подробная расшифровка доступна у менеджера Kursor</p>
                 <p class="blur-overlay__text">
-                  Наш менеджер свяжется с вами в ближайшее время, объяснит точный результат диагностики и подскажет, с
-                  какого направления ребенку лучше начать.
+                  Родитель сможет получить полную расшифровку IT Passport и персональные рекомендации у менеджера Kursor.
                 </p>
-               
               </div>
             </div>
           </div>
 
-          <p class="result-thanks">
-            Спасибо за прохождение диагностики! Данные сохранены. Команда Kursor скоро свяжется с родителем по указанному
-            номеру.
+          <p class="result-thanks" id="result-thanks-text">
+            Результат сохранен. Родитель сможет получить полную расшифровку IT Passport у менеджера Kursor.
           </p>
           <div class="result-actions">
             <button class="btn btn--primary" data-action="restart">Пройти заново</button>

@@ -1224,3 +1224,62 @@ body {
       margin-top: 0;
     }
   }
+
+/* Form intro block */
+.form-intro {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.form-intro__title {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 800;
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+
+.form-intro__desc {
+  color: var(--text-gray);
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.form-intro__hint {
+  color: var(--text-gray);
+  font-size: 0.95rem;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Saving screen */
+.saving-card {
+  text-align: center;
+  padding: 64px 32px;
+}
+
+.saving-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  display: block;
+  animation: savingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes savingPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+
+/* Direction card in result */
+.result-card--direction {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #fff3e1, #fff);
+  border: 2px solid rgba(255, 138, 0, 0.3);
+}
+
+.value--dir {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--orange);
+  margin-top: 4px;
+}

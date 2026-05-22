@@ -1,8 +1,7 @@
 const PROGRESS_KEY = "kursor-passport-progress";
-const WHATSAPP_URL = "#"; // замените на ссылку WhatsApp
 
 const state = {
-  step: "welcome",
+  step: "registration",
   registration: null,
   questionScores: emptyScores(),
   questionIndex: 0,
@@ -15,12 +14,12 @@ const state = {
 };
 
 const screens = {
-  welcome: "screen-welcome",
   registration: "screen-registration",
   questions: "screen-questions",
   memory: "screen-memory",
   color: "screen-color",
   route: "screen-route",
+  saving: "screen-saving",
   result: "screen-result",
   admin: "screen-admin"
 };
@@ -81,33 +80,21 @@ function showScreen(name) {
   saveProgress();
 }
 
-function normalizePhoneDigits(raw) {
-  return String(raw || "").replace(/\D/g, "");
-}
-
-function parseParentPhone(raw) {
-  let d = normalizePhoneDigits(raw);
-  if (d.length === 0) return { ok: false, message: "Номер не корректный" };
-  if (d.length === 11 && d[0] === "8") d = "7" + d.slice(1);
-  if (d.length === 10) d = "7" + d;
-  if (d.length < 11) return { ok: false, message: "Номер не корректный" };
-  if (d.length > 11) return { ok: false, message: "Номер не корректный" };
-  if (d[0] !== "7") return { ok: false, message: "Номер не корректный" };
-  return { ok: true, value: "+" + d };
-}
 
 function restoreRegistrationForm() {
   const form = document.getElementById("registration-form");
   if (!state.registration) return;
   const r = state.registration;
   const childInput = form.querySelector('[name="childName"]');
-  const parentInput = form.querySelector('[name="parentName"]');
-  const phoneInput = form.querySelector('[name="parentPhone"]');
+  const ageInput = form.querySelector('[name="childAge"]');
   if (childInput) childInput.value = r.childName || "";
-  if (parentInput) parentInput.value = r.parentName || "";
-  if (phoneInput) phoneInput.value = r.parentPhone || "";
-  const age = form.querySelector(`[name="ageGroup"][value="${r.ageGroup}"]`);
-  if (age) age.checked = true;
+  if (ageInput) ageInput.value = r.childAge || "";
+}
+
+function getAgeGroup(age) {
+  if (age <= 7) return "5-7";
+  if (age <= 12) return "8-12";
+  return "13+";
 }
 
 function initRegistration() {
@@ -119,28 +106,21 @@ function initRegistration() {
     err.hidden = true;
     const fd = new FormData(form);
     const childName = String(fd.get("childName") || "").trim();
-    const ageGroup = fd.get("ageGroup");
-    const parentName = String(fd.get("parentName") || "").trim();
-    const parentPhoneRaw = String(fd.get("parentPhone") || "").trim();
-    const phoneParsed = parseParentPhone(parentPhoneRaw);
+    const childAgeRaw = parseInt(fd.get("childAge"), 10);
 
-    if (!childName || !ageGroup || !parentName || !parentPhoneRaw) {
-      err.textContent = "Заполните все поля.";
+    if (!childName) {
+      err.textContent = "Введите имя ребенка.";
       err.hidden = false;
       return;
     }
-    if (!phoneParsed.ok) {
-      err.textContent = phoneParsed.message;
+    if (!childAgeRaw || childAgeRaw < 5 || childAgeRaw > 17) {
+      err.textContent = "Введите возраст от 5 до 17 лет.";
       err.hidden = false;
       return;
     }
 
-    state.registration = { childName, ageGroup, parentName, parentPhone: phoneParsed.value };
-    sheetsSaveContacts({
-      childName,
-      parentName,
-      parentPhone: phoneParsed.value
-    });
+    const ageGroup = getAgeGroup(childAgeRaw);
+    state.registration = { childName, childAge: childAgeRaw, ageGroup };
     state.questions = QUESTIONS_BY_AGE[ageGroup] || QUESTIONS_BY_AGE["8-12"];
     state.questionScores = emptyScores();
     state.questionIndex = 0;
@@ -238,36 +218,32 @@ function finishQuestions() {
   showScreen("memory");
 }
 
-function finishAll() {
+async function finishAll() {
   state.final = computeFinalScores(state.questionScores, state.memory, state.color, state.route);
-  renderResult();
-  saveLead({
-    childName: state.registration.childName,
-    ageGroup: state.registration.ageGroup,
-    parentName: state.registration.parentName,
-    parentPhone: state.registration.parentPhone,
-    topProfile: state.final.topProfile,
-    top3Profiles: state.final.top3Profiles,
-    totalScore: state.final.totalScore,
-    accuracy: state.final.accuracy,
-    questionScores: state.questionScores,
-    memory: state.memory,
-    color: state.color,
-    route: state.route
-  });
-  sheetsMarkTestPassed(state.final.topProfile);
+  showScreen("saving");
+
+  const [sent] = await Promise.all([
+    sendChildResultsToGoogleSheets(state.registration, state.final),
+    new Promise((resolve) => setTimeout(resolve, 1500))
+  ]);
+
+  renderResult(sent);
   showScreen("result");
 }
 
-function renderResult() {
+function renderResult(sheetsSent = true) {
   const f = state.final;
   const reg = state.registration;
   const open = document.getElementById("result-open");
+  const direction = PROFILE_LABELS[f.topProfile]?.track || f.topProfile;
 
   open.innerHTML = `
     <div class="result-card result-card--main"><h4>Имя ребенка</h4><div class="value">${reg.childName}</div></div>
-    <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.ageGroup}</div></div>
-    <div class="result-card result-card--main"><h4>Общий результат</h4><div class="value">${f.totalScore} баллов</div></div>
+    <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.childAge} лет</div></div>
+    <div class="result-card result-card--direction">
+      <h4>Предварительное направление</h4>
+      <div class="value value--dir">${direction}</div>
+    </div>
     <div class="result-card result-card--compact"><h4>Memory</h4><div class="value value--sm">${f.memoryScore}</div></div>
     <div class="result-card result-card--compact"><h4>Focus</h4><div class="value value--sm">${f.focusScore}</div></div>
     <div class="result-card result-card--compact"><h4>Route</h4><div class="value value--sm">${f.routeScore}</div></div>
@@ -275,7 +251,7 @@ function renderResult() {
     <div class="result-card result-card--peer">
       <h4>Сравнение с другими детьми</h4>
       <div class="peer-meter"><div class="peer-meter__fill" style="width:${f.peerPercentile}%"></div></div>
-      <p class="peer-text">Результат выше, чем у <strong>${f.peerPercentile}%</strong> участников диагностики — ${f.peerLabel}.</p>
+      <p class="peer-text">Результат выше, чем у <strong>${f.peerPercentile}%</strong> участников — ${f.peerLabel}.</p>
     </div>
     <div class="result-card result-card--traits">
       <h4>Что уже хорошо получается</h4>
@@ -299,13 +275,16 @@ function renderResult() {
     <div class="blur-block"><h5>Главная IT-профессия</h5><p>███████████</p></div>
   `;
 
-  const wa = document.getElementById("btn-whatsapp");
-  if (wa) wa.href = WHATSAPP_URL;
+  const thanksEl = document.getElementById("result-thanks-text");
+  if (thanksEl) {
+    thanksEl.textContent = sheetsSent
+      ? "Результат сохранен. Родитель сможет получить полную расшифровку IT Passport у менеджера Kursor."
+      : "Результат сформирован. Если данные не сохранились, менеджер сможет уточнить их у родителя.";
+  }
 }
 
 function resetAll() {
   clearProgress();
-  clearLeadId();
   state.registration = null;
   state.questionScores = emptyScores();
   state.questionIndex = 0;
@@ -317,13 +296,10 @@ function resetAll() {
   document.getElementById("registration-form").reset();
   if (colorGameApi) colorGameApi.resetIntro();
   if (routeGameApi) routeGameApi.resetIntro();
-  showScreen("welcome");
+  showScreen("registration");
 }
 
 function initNav() {
-  document.querySelectorAll("[data-action='start']").forEach((el) => {
-    el.addEventListener("click", () => showScreen("registration"));
-  });
   document.querySelectorAll("[data-action='home']").forEach((el) => {
     el.addEventListener("click", (e) => {
       e.preventDefault();
@@ -345,11 +321,6 @@ function initNav() {
     }
   });
 
-  document.getElementById("btn-contact-manager")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.href = "tel:+77005452025";
-  });
-
   window.addEventListener("hashchange", () => {
     if (location.hash === "#admin") {
       document.querySelectorAll(".screen").forEach((s) => s.classList.remove("screen--active"));
@@ -361,7 +332,7 @@ function initNav() {
 function restoreSession() {
   if (!loadProgress()) return;
 
-  if (state.step === "registration") {
+  if (state.step === "registration" || state.step === "welcome") {
     restoreRegistrationForm();
     showScreen("registration");
     return;
@@ -387,14 +358,13 @@ function restoreSession() {
     return;
   }
   if (state.step === "result" && state.final && state.registration) {
-    renderResult();
+    renderResult(true);
     showScreen("result");
   }
 }
 
 function onMemoryDone(memoryStats) {
   state.memory = memoryStats;
-  sheetsMarkMiniGamesPassed();
   showScreen("color");
   if (colorGameApi) colorGameApi.begin(state.registration.ageGroup, onColorDone);
 }
