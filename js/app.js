@@ -239,10 +239,6 @@ function renderResult(sheetsSent = true) {
   open.innerHTML = `
     <div class="result-card result-card--main"><h4>Имя ребенка</h4><div class="value">${reg.childName}</div></div>
     <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.ageGroup} лет</div></div>
-    <div class="result-card result-card--direction">
-      <h4>Предварительное направление</h4>
-      <div class="value value--dir">${direction}</div>
-    </div>
     <div class="result-card result-card--compact"><h4>Memory</h4><div class="value value--sm">${f.memoryScore}</div></div>
     <div class="result-card result-card--compact"><h4>Focus</h4><div class="value value--sm">${f.focusScore}</div></div>
     <div class="result-card result-card--compact"><h4>Route</h4><div class="value value--sm">${f.routeScore}</div></div>
@@ -251,10 +247,6 @@ function renderResult(sheetsSent = true) {
       <h4>Сравнение с другими детьми</h4>
       <div class="peer-meter"><div class="peer-meter__fill" style="width:${f.peerPercentile}%"></div></div>
       <p class="peer-text">Результат выше, чем у <strong>${f.peerPercentile}%</strong> участников — ${f.peerLabel}.</p>
-    </div>
-    <div class="result-card result-card--traits">
-      <h4>Что уже хорошо получается</h4>
-      <ul class="traits-list">${f.abstractTraits.map((t) => `<li>${t}</li>`).join("")}</ul>
     </div>
     <div class="result-card result-card--strengths">
       <h4>Сильные стороны</h4>
