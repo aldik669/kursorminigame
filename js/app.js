@@ -86,15 +86,9 @@ function restoreRegistrationForm() {
   if (!state.registration) return;
   const r = state.registration;
   const childInput = form.querySelector('[name="childName"]');
-  const ageInput = form.querySelector('[name="childAge"]');
+  const ageSelect = form.querySelector('[name="childAge"]');
   if (childInput) childInput.value = r.childName || "";
-  if (ageInput) ageInput.value = r.childAge || "";
-}
-
-function getAgeGroup(age) {
-  if (age <= 7) return "5-7";
-  if (age <= 12) return "8-12";
-  return "13+";
+  if (ageSelect) ageSelect.value = r.ageGroup || "";
 }
 
 function initRegistration() {
@@ -106,21 +100,20 @@ function initRegistration() {
     err.hidden = true;
     const fd = new FormData(form);
     const childName = String(fd.get("childName") || "").trim();
-    const childAgeRaw = parseInt(fd.get("childAge"), 10);
+    const ageGroup = fd.get("childAge");
 
     if (!childName) {
       err.textContent = "Введите имя ребенка.";
       err.hidden = false;
       return;
     }
-    if (!childAgeRaw || childAgeRaw < 5 || childAgeRaw > 17) {
-      err.textContent = "Введите возраст от 5 до 17 лет.";
+    if (!ageGroup) {
+      err.textContent = "Выберите возраст ребенка.";
       err.hidden = false;
       return;
     }
 
-    const ageGroup = getAgeGroup(childAgeRaw);
-    state.registration = { childName, childAge: childAgeRaw, ageGroup };
+    state.registration = { childName, childAge: ageGroup, ageGroup };
     state.questions = QUESTIONS_BY_AGE[ageGroup] || QUESTIONS_BY_AGE["8-12"];
     state.questionScores = emptyScores();
     state.questionIndex = 0;
@@ -239,7 +232,7 @@ function renderResult(sheetsSent = true) {
 
   open.innerHTML = `
     <div class="result-card result-card--main"><h4>Имя ребенка</h4><div class="value">${reg.childName}</div></div>
-    <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.childAge} лет</div></div>
+    <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.ageGroup} лет</div></div>
     <div class="result-card result-card--direction">
       <h4>Предварительное направление</h4>
       <div class="value value--dir">${direction}</div>

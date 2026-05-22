@@ -293,7 +293,7 @@ function createColorGame(root) {
   let onDoneCallback = null;
   let ageGroup = "8-12";
   let round = 0;
-  let roundsTotal = 8;
+  let roundsTotal = 6;
   let current = null;
   let roundStart = 0;
   let playing = false;
@@ -425,7 +425,7 @@ function createColorGame(root) {
     },
     begin(group, cb) {
       ageGroup = group;
-      roundsTotal = group === "5-7" ? 6 : group === "8-12" ? 8 : 10;
+      roundsTotal = 6;
       onDoneCallback = cb;
       showIntro();
     }

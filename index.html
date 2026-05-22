@@ -46,7 +46,12 @@
               </label>
               <label class="field">
                 <span>Возраст ребенка</span>
-                <input type="number" name="childAge" required placeholder="Возраст (5–17)" min="5" max="17" inputmode="numeric" />
+                <select name="childAge" required class="field-select">
+                  <option value="" disabled selected>Выбери возраст</option>
+                  <option value="5-7">5–7 лет</option>
+                  <option value="8-12">8–12 лет</option>
+                  <option value="13+">13+ лет</option>
+                </select>
               </label>
               <p class="form-error" id="form-error" hidden></p>
               <button type="submit" class="btn btn--primary btn--full btn--cta-hero">Начать тест</button>
