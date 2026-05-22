@@ -86,9 +86,9 @@ function restoreRegistrationForm() {
   if (!state.registration) return;
   const r = state.registration;
   const childInput = form.querySelector('[name="childName"]');
-  const ageSelect = form.querySelector('[name="childAge"]');
   if (childInput) childInput.value = r.childName || "";
-  if (ageSelect) ageSelect.value = r.ageGroup || "";
+  const ageRadio = form.querySelector(`[name="childAge"][value="${r.ageGroup}"]`);
+  if (ageRadio) ageRadio.checked = true;
 }
 
 function initRegistration() {

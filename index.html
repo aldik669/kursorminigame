@@ -44,15 +44,23 @@
                 <span>Имя ребенка</span>
                 <input type="text" name="childName" required placeholder="Имя" autocomplete="given-name" />
               </label>
-              <label class="field">
+              <div class="field field--age">
                 <span>Возраст ребенка</span>
-                <select name="childAge" required class="field-select">
-                  <option value="" disabled selected>Выбери возраст</option>
-                  <option value="5-7">5–7 лет</option>
-                  <option value="8-12">8–12 лет</option>
-                  <option value="13+">13+ лет</option>
-                </select>
-              </label>
+                <div class="age-pills">
+                  <label class="age-pill">
+                    <input type="radio" name="childAge" value="5-7" />
+                    <span>5–7 лет</span>
+                  </label>
+                  <label class="age-pill">
+                    <input type="radio" name="childAge" value="8-12" />
+                    <span>8–12 лет</span>
+                  </label>
+                  <label class="age-pill">
+                    <input type="radio" name="childAge" value="13+" />
+                    <span>13+ лет</span>
+                  </label>
+                </div>
+              </div>
               <p class="form-error" id="form-error" hidden></p>
               <button type="submit" class="btn btn--primary btn--full btn--cta-hero">Начать тест</button>
             </form>

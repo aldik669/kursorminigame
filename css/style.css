@@ -1225,23 +1225,47 @@ body {
     }
   }
 
-/* Age select */
-.field-select {
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--grid);
-  font: inherit;
-  font-size: 1rem;
-  outline: none;
-  appearance: none;
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 16px center;
+/* Age pills */
+.age-pills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.age-pill {
   cursor: pointer;
 }
 
-.field-select:focus {
+.age-pill input {
+  display: none;
+}
+
+.age-pill span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 10px;
+  border-radius: 16px;
+  border: 2px solid var(--grid);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+  background: #fff;
+  color: var(--text);
+}
+
+.age-pill span:hover {
+  border-color: #ccc;
+  background: #fafafa;
+}
+
+.age-pill input:checked + span {
   border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.15);
+  background: var(--soft-orange);
+  color: var(--orange);
+  box-shadow: 0 4px 16px rgba(255, 138, 0, 0.18);
 }
 
 /* Form intro block */
