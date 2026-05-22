@@ -238,11 +238,9 @@ function renderResult(sheetsSent = true) {
 
   open.innerHTML = `
     <div class="result-card result-card--main"><h4>Имя ребенка</h4><div class="value">${reg.childName}</div></div>
-    <div class="result-card result-card--main"><h4>Возраст</h4><div class="value">${reg.ageGroup} лет</div></div>
     <div class="result-card result-card--compact"><h4>Memory</h4><div class="value value--sm">${f.memoryScore}</div></div>
     <div class="result-card result-card--compact"><h4>Focus</h4><div class="value value--sm">${f.focusScore}</div></div>
     <div class="result-card result-card--compact"><h4>Route</h4><div class="value value--sm">${f.routeScore}</div></div>
-    <div class="result-card result-card--compact"><h4>Accuracy</h4><div class="value value--sm">${f.accuracy}%</div></div>
     <div class="result-card result-card--peer">
       <h4>Сравнение с другими детьми</h4>
       <div class="peer-meter"><div class="peer-meter__fill" style="width:${f.peerPercentile}%"></div></div>
